@@ -19,7 +19,7 @@ namespace Sudoku
         /// <summary>
         /// Stocke la grille de sudoku actuelle.
         /// </summary>
-        private Grille g;
+        private Grille grille;
         /// <summary>
         /// Permet de recommencer la grille (avec les trous déjà placés).
         /// </summary>
@@ -77,8 +77,8 @@ namespace Sudoku
         {
             int level = (int)this.levelChooser.Value;
 
-            g = new Grille();
-            g.generateGrid();
+            grille = new Grille();
+            grille.generateGrid();
 
             this.grilleActuelleDebut = new object[Grille.TAILLE_COL, Grille.TAILLE_LIGNE];
             dataGrid.ColumnCount = Grille.TAILLE_LIGNE;
@@ -92,33 +92,51 @@ namespace Sudoku
                 dataGrid.Columns[i].DefaultCellStyle.Font = new Font(dataGrid.DefaultCellStyle.Font.FontFamily, 22, FontStyle.Bold);
                 for (int j = 0; j < Grille.TAILLE_LIGNE; j++)
                 {
-                    dataGrid[j, i].Value = g.Tableau[i, j].Valeur;
-                    dataGrid[j, i].ReadOnly = true;
-                    dataGrid[j, i].Style.BackColor = Color.LightYellow;
-                    grilleActuelleDebut[j, i] = g.Tableau[i, j].Valeur;
+                    dataGrid[i, j].Value = grille.Tableau[i, j].Valeur;
+                    dataGrid[i, j].ReadOnly = true;
+                    dataGrid[i, j].Style.BackColor = Color.LightYellow;
+                    grilleActuelleDebut[i, j] = grille.Tableau[i, j].Valeur;
                 }
             }
 
-            Random random = new Random();
 
             switch (level)
             {
                 case 1:
                     //On dévoile 50 cases, on en cache donc 31
-                    int cpt = 0;
-                    while (cpt < 31)
-                    {
-                        int randomCol = random.Next(0, Grille.TAILLE_LIGNE);
-                        int randomLigne = random.Next(0, Grille.TAILLE_LIGNE);
-                        this.dataGrid[randomLigne, randomCol].Value = null;
-                        this.dataGrid[randomLigne, randomCol].ReadOnly = false;
-                        this.dataGrid[randomLigne, randomCol].Style.BackColor = Color.White;
-                        this.grilleActuelleDebut[randomLigne, randomCol] = null;
-                        cpt++;
-                    }
+                    cacherCellules(1);
+                    break;
+                case 2:
+                    cacherCellules(40);
+                    break;
+                case 3:
+                    cacherCellules(50);
                     break;
             }
             this.restart.Enabled = true;
+            this.nivActuel.Text = "Niv. " + level;
+            this.dataGrid.Enabled = true ;
+        }
+
+        /// <summary>
+        /// Fonction permettant de cacher un certains nombre de cellules de la grille.
+        /// </summary>
+        /// <param name="nb">Nombre de cellules à cacher.</param>
+        private void cacherCellules(int nb)
+        {
+            Random random = new Random();
+
+            int cpt = 0;
+            while (cpt < nb)
+            {
+                int randomCol = random.Next(0, Grille.TAILLE_LIGNE);
+                int randomLigne = random.Next(0, Grille.TAILLE_LIGNE);
+                this.dataGrid[randomLigne, randomCol].Value = null;
+                this.dataGrid[randomLigne, randomCol].ReadOnly = false;
+                this.dataGrid[randomLigne, randomCol].Style.BackColor = Color.White;
+                this.grilleActuelleDebut[randomLigne, randomCol] = null;
+                cpt++;
+            }
         }
 
         /// <summary>
@@ -132,9 +150,14 @@ namespace Sudoku
             {
                 for (int j = 0; j < Grille.TAILLE_LIGNE; j++)
                 {
-                    this.dataGrid[j, i].Value = this.grilleActuelleDebut[j, i];
+                    this.dataGrid[i, j].Value = this.grilleActuelleDebut[i, j];
+                    if(this.dataGrid[i,j].Value == null)
+                    {
+                        this.dataGrid[i, j].Style.BackColor = Color.White;
+                    }
                 }
             }
+            this.dataGrid.Enabled = true;
         }
 
         /// <summary>
@@ -147,13 +170,46 @@ namespace Sudoku
             {
                 for (int j = 0; j < Grille.TAILLE_LIGNE; j++)
                 {
-                    if (this.dataGrid[j, i].Value == null)
+                    if (this.dataGrid[i, j].Value == null)
                     {
                         return false;
                     }
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// Fonction d'action de vérification de la grille une fois remplie par l'utilisateur.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void verify_Click(object sender, EventArgs e)
+        {
+            bool correct = true;
+            for (int i = 0; i < Grille.TAILLE_COL; i++)
+            {
+                for (int j = 0; j < Grille.TAILLE_LIGNE; j++)
+                {
+                    if (int.Parse(this.dataGrid[i,j].Value.ToString()) != grille.Tableau[i,j].Valeur)
+                    {
+                        correct = false;
+                        this.dataGrid[i, j].Style.BackColor = Color.Red;
+                    }
+                }
+            }
+            if(correct)
+            {
+                this.resultat.Text = "Vous avez gagné! Pour rejouer, regénérez une grille.";
+                this.resultat.ForeColor = Color.Green;
+                this.dataGrid.Enabled = false;
+            }
+            else 
+            {
+                this.resultat.Text = "La grille proposée n'est pas correcte..";
+                this.resultat.ForeColor = Color.Red;
+            }
+            this.resultat.Visible = true;
         }
     }
 }

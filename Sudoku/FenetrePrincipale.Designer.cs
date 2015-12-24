@@ -26,8 +26,8 @@ namespace Sudoku
 
         private void ConstructGrid(int level)
         {
-            g = new Grille();
-            g.generateGrid();
+            grille = new Grille();
+            grille.generateGrid();
 
             dataGrid.ColumnCount = Grille.TAILLE_LIGNE;
             dataGrid.RowCount = Grille.TAILLE_COL;
@@ -40,7 +40,7 @@ namespace Sudoku
                 dataGrid.Columns[i].DefaultCellStyle.Font = new Font(dataGrid.DefaultCellStyle.Font.FontFamily, 22, FontStyle.Bold);
                 for(int j=0; j< Grille.TAILLE_LIGNE; j++)
                 {
-                    dataGrid[j,i].Value = g.Tableau[i, j].Valeur;
+                    dataGrid[j,i].Value = grille.Tableau[i, j].Valeur;
                     dataGrid[j, i].ReadOnly = true;
                     dataGrid[j, i].Style.BackColor = Color.LightYellow;
                 }
@@ -74,7 +74,7 @@ namespace Sudoku
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGrid = new System.Windows.Forms.DataGridView();
             this.titre = new System.Windows.Forms.Label();
             this.difficulteLabel = new System.Windows.Forms.Label();
@@ -84,6 +84,7 @@ namespace Sudoku
             this.nivActuel = new System.Windows.Forms.Label();
             this.restart = new System.Windows.Forms.Button();
             this.verify = new System.Windows.Forms.Button();
+            this.resultat = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelChooser)).BeginInit();
             this.SuspendLayout();
@@ -96,14 +97,14 @@ namespace Sudoku
             this.dataGrid.AllowUserToResizeRows = false;
             this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGrid.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGrid.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGrid.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGrid.Location = new System.Drawing.Point(10, 10);
             this.dataGrid.Margin = new System.Windows.Forms.Padding(0);
             this.dataGrid.MultiSelect = false;
@@ -193,9 +194,9 @@ namespace Sudoku
             this.nivActuel.Font = new System.Drawing.Font("Segoe Print", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nivActuel.Location = new System.Drawing.Point(676, 268);
             this.nivActuel.Name = "nivActuel";
-            this.nivActuel.Size = new System.Drawing.Size(57, 28);
+            this.nivActuel.Size = new System.Drawing.Size(59, 28);
             this.nivActuel.TabIndex = 6;
-            this.nivActuel.Text = "niv. -";
+            this.nivActuel.Text = "Niv. -";
             // 
             // restart
             // 
@@ -219,12 +220,25 @@ namespace Sudoku
             this.verify.TabIndex = 8;
             this.verify.Text = "Vérifier la grille";
             this.verify.UseVisualStyleBackColor = true;
+            this.verify.Click += new System.EventHandler(this.verify_Click);
             // 
-            // Form1
+            // resultat
+            // 
+            this.resultat.Font = new System.Drawing.Font("Segoe Print", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.resultat.Location = new System.Drawing.Point(518, 405);
+            this.resultat.Name = "resultat";
+            this.resultat.Size = new System.Drawing.Size(270, 103);
+            this.resultat.TabIndex = 9;
+            this.resultat.Text = "Vous avez gagné! Libre a vous de rejouer";
+            this.resultat.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.resultat.Visible = false;
+            // 
+            // FenetrePrincipale
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 650);
+            this.ClientSize = new System.Drawing.Size(800, 519);
+            this.Controls.Add(this.resultat);
             this.Controls.Add(this.verify);
             this.Controls.Add(this.restart);
             this.Controls.Add(this.nivActuel);
@@ -234,9 +248,10 @@ namespace Sudoku
             this.Controls.Add(this.difficulteLabel);
             this.Controls.Add(this.titre);
             this.Controls.Add(this.dataGrid);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "FenetrePrincipale";
+            this.Text = "Sudoku";
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelChooser)).EndInit();
             this.ResumeLayout(false);
@@ -255,6 +270,7 @@ namespace Sudoku
         private Label nivActuel;
         private Button restart;
         private Button verify;
+        private Label resultat;
 
     }
 }

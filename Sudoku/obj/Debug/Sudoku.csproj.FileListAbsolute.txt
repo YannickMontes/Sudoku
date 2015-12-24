@@ -6,4 +6,4 @@ C:\Users\Yannick\Polytech\ISI\Sudoku\Sudoku\obj\Debug\Sudoku.Properties.Resource
 C:\Users\Yannick\Polytech\ISI\Sudoku\Sudoku\obj\Debug\Sudoku.csproj.GenerateResource.Cache
 C:\Users\Yannick\Polytech\ISI\Sudoku\Sudoku\obj\Debug\Sudoku.exe
 C:\Users\Yannick\Polytech\ISI\Sudoku\Sudoku\obj\Debug\Sudoku.pdb
-C:\Users\Yannick\Polytech\ISI\Sudoku\Sudoku\obj\Debug\Sudoku.Form1.resources
+C:\Users\Yannick\Polytech\ISI\Sudoku\Sudoku\obj\Debug\Sudoku.FenetrePrincipale.resources
