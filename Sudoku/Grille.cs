@@ -140,6 +140,8 @@ namespace Sudoku
         /// </summary>
         public void generateGrid()
         {
+            bool restart = false;
+            int globalCpt = 0;
             Random random = new Random();
             for (int i = 0; i < TAILLE_LIGNE; i++)
             {
@@ -158,6 +160,7 @@ namespace Sudoku
                     } while (cpt<1000 && (isInColumn(valeursUtilises.ElementAt(randomVal), j) || isInLine(valeursUtilises.ElementAt(randomVal), i) || isInSquare(valeursUtilises.ElementAt(randomVal), i, j)));
                     if (cpt >= 1000)
                     {
+                        globalCpt++;
                         for (int l = 0; l < TAILLE_COL; l++ )
                         {
                             this.tableau[i, l].Valeur = -1;
@@ -169,8 +172,18 @@ namespace Sudoku
                     {
                         this.tableau[i, j].Valeur = valeursUtilises.ElementAt(randomVal);
                         valeursUtilises.RemoveAt(randomVal);
-                    }           
+                    }        
+                    if(globalCpt>=100)
+                    {
+                        i = TAILLE_LIGNE;
+                        j = TAILLE_COL;
+                        restart = true;
+                    }
                 }
+            }
+            if(restart)
+            {
+                this.generateGrid();
             }
         }
 

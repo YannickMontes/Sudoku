@@ -104,7 +104,7 @@ namespace Sudoku
             {
                 case 1:
                     //On dévoile 50 cases, on en cache donc 31
-                    cacherCellules(1);
+                    cacherCellules(31);
                     break;
                 case 2:
                     cacherCellules(40);
